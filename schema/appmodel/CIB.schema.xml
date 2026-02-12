@@ -118,6 +118,7 @@
   <attribute name="cib_port" description="Port where the CIB is listening to" type="u16" is-not-null="yes"/>
   <attribute name="connection_timeout_ms" description="Connection timeout" type="u16" is-not-null="yes"/>
   <attribute name="trigger_bit" description="Trigger bit that this particular instance is associated with" type="u32" is-not-null="yes"/>
+  <attribute name="simulation_mode" description="Enable simulation mode (emulated CIB hardware)" type="bool" init-value="false" is-not-null="no"/>
   <relationship name="calibration_stream" class-type="CIBCalibrationStream" low-cc="zero" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="cib_trigger" class-type="CIBTrigger" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="trigger_report" class-type="CIBTriggerReport" low-cc="zero" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
