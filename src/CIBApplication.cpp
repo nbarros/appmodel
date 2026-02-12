@@ -52,6 +52,8 @@ CIBApplication::contained_resources() const {
 void
 CIBApplication::generate_modules(const confmodel::Session* session) const
 {
+  TLOG_DEBUG(6) << "Generating modules for application " << this->UID();
+
   std::vector<const confmodel::DaqModule*> modules;
 
   ConfigObjectFactory obj_fac(this);
@@ -89,7 +91,10 @@ CIBApplication::generate_modules(const confmodel::Session* session) const
     }
   }
   
-  auto CIB_conf = get_generator();
+  // All pointers should be set. Check it
+  
+
+    auto CIB_conf = get_generator();
   if (CIB_conf == nullptr) {
     throw(BadConf(ERS_HERE, "No CIBModule configuration given"));
   }
@@ -101,6 +106,10 @@ CIBApplication::generate_modules(const confmodel::Session* session) const
   }
   if (hsiNetDesc == nullptr) {
     throw(BadConf(ERS_HERE, "No HSIEvent output network descriptor given"));
+  }
+  if (tsNetDesc == nullptr)
+  {
+    throw(BadConf(ERS_HERE, "No TimeSync network descriptor given"));
   }
 
   // Process special Network rules!
