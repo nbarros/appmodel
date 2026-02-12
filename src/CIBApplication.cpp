@@ -161,19 +161,21 @@ CIBApplication::generate_modules(const confmodel::Session* session) const
   conffwk::ConfigObject tsNetObj;
   // Time Sync network connection
   if (dlhConf->get_generate_timesync()) {
-    std::string tsStreamUid = tsNetDesc->get_uid_base() + std::to_string(id);
-    tsNetObj = obj_fac.create_net_obj(tsNetDesc, tsStreamUid);
-    net_objc.push_back(&tsNetObj);
+    // std::string tsStreamUid = tsNetDesc->get_uid_base() + std::to_string(id);
+    // tsNetObj = obj_fac.create_net_obj(tsNetDesc, tsStreamUid);
+    tsNetObj = obj_fac.create_net_obj(tsNetDesc, std::to_string(id));
+    // net_objc.push_back(&tsNetObj);
+    dlhObj.set_objs("outputs", { &tsNetObj });
   }
 
-  dlhObj.set_objs("outputs", net_objc);
+  // dlhObj.set_objs("outputs", net_objc);
 
   // create Queues from CIB to DLH
-  std::string dataQueueUid(dlhInputQDesc->get_uid_base() + std::string("CIB"));
+  // std::string dataQueueUid(dlhInputQDesc->get_uid_base() + std::string("CIB"));
   conffwk::ConfigObject queueObj = obj_fac.create_queue_sid_obj(dlhInputQDesc, id); 
-  queueObj.rename(dataQueueUid);
+  // queueObj.rename(dataQueueUid);
     
-  CIB_module_outputs.push_back(queueObj);
+  //CIB_module_outputs.push_back(queueObj);
 
   // Create network connections to DLHs
   conffwk::ConfigObject faNetObj = obj_fac.create_net_obj(dlhReqInputNetDesc, UID());
@@ -183,7 +185,8 @@ CIBApplication::generate_modules(const confmodel::Session* session) const
   modules.push_back(obj_fac.get_dal<appmodel::DataHandlerModule>(uid));
 
   conffwk::ConfigObject hsiNetObj = obj_fac.create_net_obj(hsiNetDesc, "");
-  CIB_module_outputs.push_back(hsiNetObj);
+  // CIB_module_outputs.push_back(hsiNetObj);
+
   
   auto board = get_board();
   
@@ -191,13 +194,14 @@ CIBApplication::generate_modules(const confmodel::Session* session) const
   module_obj.set_obj("configuration", & CIB_conf -> config_object() );
   module_obj.set_obj("board", & board -> config_object() );
   
-  std::vector<const conffwk::ConfigObject*> CIB_module_output_ptrs;
-  for ( const auto & o : CIB_module_outputs ) {
-    CIB_module_output_ptrs.push_back( & o );
-  }
+  // std::vector<const conffwk::ConfigObject*> CIB_module_output_ptrs;
+  // for ( const auto & o : CIB_module_outputs ) {
+  //   CIB_module_output_ptrs.push_back( & o );
+  // }
+  // // what are the outputs here?
+  // module_obj.set_objs("outputs", CIB_module_output_ptrs);
   
-  module_obj.set_objs("outputs", CIB_module_output_ptrs);
-  
+  module_obj.set_objs("outputs", { &queueObj, &hsiNetObj});
   auto module = obj_fac.get_dal<appmodel::CIBModule>(module_obj.UID());
   
   modules.push_back(module);
