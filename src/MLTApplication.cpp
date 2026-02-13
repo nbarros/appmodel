@@ -32,6 +32,7 @@
 #include "appmodel/DataRecorderConf.hpp"
 #include "appmodel/DataSubscriberModule.hpp"
 #include "appmodel/CTBApplication.hpp"
+#include "appmodel/CIBApplication.hpp"
 #include "appmodel/FakeDataApplication.hpp"
 #include "appmodel/FakeDataProdConf.hpp"
 #include "appmodel/FakeHSIApplication.hpp"
@@ -352,7 +353,20 @@ MLTApplication::generate_modules(const confmodel::Session* session) const
 	sourceIds.push_back(src_id_conf_ptr);
       } // loop over CTB sources
     } // CTB app
-    
+
+    auto cib_app = app->cast<appmodel::CIBApplication>();
+    if (cib_app) {
+      conffwk::ConfigObject* hsEventSourceIdConf = new conffwk::ConfigObject(
+        obj_fac.create(
+          "SourceIDConf",
+          cib_app->UID() + "-" + std::to_string(cib_app->get_source_id()->get_sid())
+	  )
+        );
+      hsEventSourceIdConf->set_by_val<uint32_t>("sid", cib_app->get_source_id()->get_sid());
+      hsEventSourceIdConf->set_by_val<std::string>("subsystem", cib_app->get_source_id()->get_subsystem());
+      sourceIds.push_back(hsEventSourceIdConf);
+    } // CIB app
+
   } // loop over applications
   
   // Get mandatory links
